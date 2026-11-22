@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Admin Portal | Dr. Nageshree - Vaidya Veda</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            linen: '#FAF7F2',
+            sand: '#F3ECE4',
+            sage: '#E8EFE9',
+            blush: '#F9EFEA',
+            copper: {
+              DEFAULT: '#B86B43',
+              light: '#D6855B',
+              dark: '#8E4623',
+              glow: 'rgba(184, 107, 67, 0.15)'
+            },
+            charcoal: {
+              DEFAULT: '#1E1C1A',
+              muted: '#5C554E'
+            }
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
+</head>
+<body class="bg-[#FAF7F2] text-[#1E1C1A] antialiased">
+
+  <!-- PIN Protection Modal -->
+  <div id="adminPinModal" class="fixed inset-0 z-50 bg-[#1E1C1A]/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 border border-[#E8DFD5] shadow-2xl text-center space-y-6">
+      <div class="w-16 h-16 rounded-2xl bg-[#E8EFE9] text-[#B86B43] flex items-center justify-center mx-auto shadow-inner">
+        <i data-lucide="lock" class="w-8 h-8"></i>
+      </div>
+
+      <div>
+        <span class="text-xs font-bold uppercase tracking-widest text-[#B86B43]">Doctor Access Only</span>
+        <h3 class="font-serif text-2xl font-bold text-[#1E1C1A] mt-1">Dr. Nageshree's Sanctum Desk</h3>
+        <p class="text-xs text-[#5C554E] mt-2">
+          Please enter your secure 4-digit doctor PIN to manage available slots, verify UPI payments, and review patient intake records.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <input type="password" id="adminPinInput" maxlength="6" placeholder="Enter PIN (Default: 1234)" class="w-full text-center text-2xl font-mono tracking-widest py-3 px-4 rounded-xl border-2 border-[#E8DFD5] focus:border-[#B86B43] focus:outline-none">
+        <p id="adminPinError" class="text-xs text-rose-600 font-semibold hidden">Incorrect PIN. Try default demo PIN: 1234</p>
+      </div>
+
+      <button id="adminPinSubmit" class="w-full py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-white bg-[#1E1C1A] hover:bg-[#B86B43] transition-colors shadow-lg">
+        Unlock Clinical Desk
+      </button>
+
+      <div class="pt-2">
+        <a href="index.html" class="text-xs text-[#5C554E] hover:underline flex items-center justify-center gap-1">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back to Patient Website
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Admin Portal Layout (Revealed upon auth) -->
+  <div id="adminMainContent" class="hidden min-h-screen flex flex-col">
+    
+    <!-- Admin Header -->
+    <header class="bg-white border-b border-[#E8DFD5] sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="w-10 h-10 rounded-xl bg-[#FAF7F2] p-1 border border-[#E8DFD5] flex items-center justify-center">
+            <img src="assets/images/logo.svg" alt="Vaidya Veda" class="w-full h-full object-contain">
+          </a>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-serif text-xl font-bold text-[#1E1C1A]">Dr. Nageshree's Clinical Console</h1>
+              <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold">Live Admin</span>
+            </div>
+            <p class="text-[11px] text-[#5C554E]">Vaidya Veda Fertility Management • Ex-Gynoveda</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <a href="index.html" target="_blank" class="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#5C554E] hover:text-[#B86B43] bg-[#FAF7F2] px-3.5 py-2 rounded-xl border border-[#E8DFD5]">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i> View Patient Website
+          </a>
+          <button id="adminLogoutBtn" class="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors flex items-center gap-1.5">
+            <i data-lucide="log-out" class="w-4 h-4"></i> <span class="hidden sm:inline">Logout</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="max-w-7xl mx-auto px-6 flex items-center gap-8 border-t border-[#F0EAE1] text-xs font-semibold">
+        <button data-tab="tabAppointments" class="admin-tab-btn py-3.5 border-b-2 border-[#B86B43] text-[#1E1C1A] font-bold flex items-center gap-2 transition-colors">
+          <i data-lucide="users" class="w-4 h-4 text-[#B86B43]"></i> Appointments CRM
+        </button>
+        <button data-tab="tabSlotManager" class="admin-tab-btn py-3.5 border-b-2 border-transparent text-[#5C554E] hover:text-[#1E1C1A] flex items-center gap-2 transition-colors">
+          <i data-lucide="calendar" class="w-4 h-4"></i> Slot & Schedule Manager
+        </button>
+        <button data-tab="tabSettings" class="admin-tab-btn py-3.5 border-b-2 border-transparent text-[#5C554E] hover:text-[#1E1C1A] flex items-center gap-2 transition-colors">
+          <i data-lucide="settings" class="w-4 h-4"></i> Profile & UPI Settings
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-6 py-8">
+      
+      <!-- Top Metrics Bar -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div class="bg-white p-5 rounded-2xl border border-[#E8DFD5] shadow-soft">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#5C554E] block">Total Bookings</span>
+          <div id="statTotalBookings" class="font-serif text-2xl font-extrabold text-[#1E1C1A] mt-1">0</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-soft">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800 block">Pending Verification</span>
+          <div id="statPendingVerification" class="font-serif text-2xl font-extrabold text-amber-900 mt-1">0</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-soft">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800 block">Confirmed</span>
+          <div id="statConfirmedAppointments" class="font-serif text-2xl font-extrabold text-emerald-900 mt-1">0</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-[#E8DFD5] shadow-soft">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#5C554E] block">Today's Consults</span>
+          <div id="statTodayAppointments" class="font-serif text-2xl font-extrabold text-[#B86B43] mt-1">0</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-[#E8DFD5] shadow-soft col-span-2 md:col-span-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-[#5C554E] block">Verified Collections</span>
+          <div id="statTotalRevenue" class="font-serif text-2xl font-extrabold text-[#1E1C1A] mt-1">₹0</div>
+        </div>
+      </div>
+
+      <!-- TAB 1: Appointments CRM -->
+      <div id="tabAppointments" class="admin-tab-pane space-y-6">
+        
+        <!-- Controls: Filters, Search, Export -->
+        <div class="bg-white p-5 rounded-2xl border border-[#E8DFD5] shadow-soft flex flex-col md:flex-row items-center justify-between gap-4">
+          <!-- Status Pills -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button data-filter="all" class="admin-status-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#1E1C1A] text-white transition-all">
+              All
+            </button>
+            <button data-filter="pending" class="admin-status-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#FAF7F2] text-[#5C554E] border border-[#E8DFD5] hover:border-[#B86B43] transition-all">
+              Pending Check
+            </button>
+            <button data-filter="confirmed" class="admin-status-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#FAF7F2] text-[#5C554E] border border-[#E8DFD5] hover:border-[#B86B43] transition-all">
+              Confirmed
+            </button>
+            <button data-filter="completed" class="admin-status-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#FAF7F2] text-[#5C554E] border border-[#E8DFD5] hover:border-[#B86B43] transition-all">
+              Completed
+            </button>
+          </div>
+
+          <!-- Search & Export -->
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <div class="relative flex-grow md:w-64">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-[#5C554E]"></i>
+              <input type="text" id="adminSearchInput" placeholder="Search patient, phone, UTR..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-[#E8DFD5] text-xs focus:outline-none focus:border-[#B86B43]">
+            </div>
+            <button onclick="exportAppointmentsToCSV()" class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#FAF7F2] text-[#1E1C1A] border border-[#E8DFD5] hover:bg-[#1E1C1A] hover:text-white transition-colors flex items-center gap-1.5">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Appointments Table -->
+        <div class="bg-white rounded-2xl border border-[#E8DFD5] shadow-soft overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-[#FAF7F2] border-b border-[#E8DFD5] text-[11px] font-bold uppercase tracking-wider text-[#5C554E]">
+                  <th class="py-3.5 px-4">Ref ID / Date</th>
+                  <th class="py-3.5 px-4">Patient / Couple</th>
+                  <th class="py-3.5 px-4">Consultation</th>
+                  <th class="py-3.5 px-4">Slot</th>
+                  <th class="py-3.5 px-4">UPI Payment & UTR</th>
+                  <th class="py-3.5 px-4">Status</th>
+                  <th class="py-3.5 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminAppointmentsTableBody">
+                <!-- Rendered dynamically by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: Slot & Schedule Manager -->
+      <div id="tabSlotManager" class="admin-tab-pane space-y-6 hidden">
+        
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-[#E8DFD5] shadow-soft">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#F0EAE1] gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-[#B86B43]">Daily Slot Controller</span>
+              <h3 class="font-serif text-2xl font-bold text-[#1E1C1A] mt-1">Manage Your Available Consultation Slots</h3>
+              <p class="text-xs text-[#5C554E]">
+                Select any date to enable or disable specific slots, or block entire days for conferences or personal leave.
+              </p>
+            </div>
+
+            <!-- Date Picker -->
+            <div class="flex items-center gap-3">
+              <label class="text-xs font-bold text-[#1E1C1A]">Select Date:</label>
+              <input type="date" id="adminSlotDatePicker" class="px-4 py-2.5 rounded-xl border border-[#E8DFD5] text-xs font-semibold focus:outline-none focus:border-[#B86B43]">
+            </div>
+          </div>
+
+          <!-- Quick Action Bar for Selected Date -->
+          <div class="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFD5] mb-6">
+            <div class="flex items-center gap-3">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="adminBlockDayToggle" onchange="toggleDayBlocked()" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
+              </label>
+              <span class="text-xs font-bold text-[#1E1C1A]">Block Entire Day (Mark Leave / Unavailable)</span>
+            </div>
+
+            <button onclick="resetSlotsToDefault()" class="px-4 py-2 rounded-xl text-xs font-bold bg-white border border-[#E8DFD5] hover:bg-gray-50 text-[#5C554E] transition-colors">
+              Reset Slots to Standard (8 Slots)
+            </button>
+          </div>
+
+          <!-- Individual Slot Grid for Date -->
+          <div class="mb-4">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#1E1C1A] mb-3">
+              Hourly Timings for Selected Date
+            </label>
+            <div id="adminSlotsManagerGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              <!-- Rendered via admin.js -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- TAB 3: Doctor Settings & Profile -->
+      <div id="tabSettings" class="admin-tab-pane space-y-6 hidden">
+        
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-[#E8DFD5] shadow-soft max-w-3xl">
+          <div class="pb-6 border-b border-[#F0EAE1] mb-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-[#B86B43]">Payment & Clinic Configuration</span>
+            <h3 class="font-serif text-2xl font-bold text-[#1E1C1A] mt-1">Doctor Profile & UPI Gateway Settings</h3>
+            <p class="text-xs text-[#5C554E]">
+              Updates made here instantly update the dynamic UPI QR code generator on the patient booking wizard.
+            </p>
+          </div>
+
+          <div class="space-y-5">
+            <div>
+              <label class="block text-xs font-bold text-[#1E1C1A] mb-1 uppercase tracking-wider">
+                Official Doctor UPI ID / VPA *
+              </label>
+              <div class="relative">
+                <input type="text" id="adminDoctorUpiInput" class="w-full px-4 py-3 rounded-xl border border-[#E8DFD5] font-mono text-sm focus:outline-none focus:border-[#B86B43]">
+                <span class="absolute right-3 top-3 text-xs text-[#5C554E]">e.g. drnageshree@okaxis</span>
+              </div>
+              <p class="text-[11px] text-[#5C554E] mt-1">
+                Patients will scan a QR code and make payments directly to this verified UPI ID.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-[#1E1C1A] mb-1 uppercase tracking-wider">
+                  Contact Mobile / WhatsApp
+                </label>
+                <input type="text" id="adminDoctorPhoneInput" class="w-full px-4 py-3 rounded-xl border border-[#E8DFD5] text-xs focus:outline-none focus:border-[#B86B43]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-[#1E1C1A] mb-1 uppercase tracking-wider">
+                  Clinic Email
+                </label>
+                <input type="email" id="adminDoctorEmailInput" class="w-full px-4 py-3 rounded-xl border border-[#E8DFD5] text-xs focus:outline-none focus:border-[#B86B43]">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#1E1C1A] mb-1 uppercase tracking-wider">
+                Clinic Sanctum Address
+              </label>
+              <textarea id="adminDoctorClinicInput" rows="2" class="w-full p-3 rounded-xl border border-[#E8DFD5] text-xs focus:outline-none focus:border-[#B86B43]"></textarea>
+            </div>
+
+            <div class="pt-4 border-t border-[#F0EAE1]">
+              <button id="saveDoctorSettingsBtn" class="px-8 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider text-white bg-[#1E1C1A] hover:bg-[#B86B43] transition-colors shadow-md">
+                Save & Update Live System
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Patient Detail Inspection & Notes Modal -->
+  <div id="patientDetailModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div id="patientDetailModalContent" class="bg-white rounded-3xl max-w-xl w-full border border-[#E8DFD5] shadow-2xl overflow-hidden animate-scale-up">
+      <!-- Rendered via admin.js -->
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/admin.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

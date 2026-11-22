@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap');
+
+:root {
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  
+  /* Luxury Pastel & Ayurvedic Copper Palette */
+  --color-bg-linen: #FAF7F2;
+  --color-bg-sand: #F3ECE4;
+  --color-bg-card: #FFFFFF;
+  --color-pastel-sage: #E8EFE9;
+  --color-pastel-blush: #F9EFEA;
+  --color-pastel-clay: #F0E6DE;
+  
+  /* Accents */
+  --color-copper: #B86B43;
+  --color-copper-light: #D6855B;
+  --color-copper-dark: #8E4623;
+  --color-copper-glow: rgba(184, 107, 67, 0.15);
+  --color-charcoal: #1E1C1A;
+  --color-charcoal-muted: #5C554E;
+  --color-border: #E8DFD5;
+  --color-border-light: #F0EAE1;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-linen);
+  color: var(--color-charcoal);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-sand);
+}
+::-webkit-scrollbar-thumb {
+  background: #D1BEB0;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-copper);
+}
+
+/* Copper Gradient Texts */
+.text-copper-gradient {
+  background: linear-gradient(135deg, #B86B43 0%, #D6855B 50%, #8E4623 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-copper-gradient {
+  background: linear-gradient(135deg, #B86B43 0%, #C97D55 60%, #9E4F28 100%);
+}
+
+.bg-copper-subtle {
+  background: linear-gradient(135deg, rgba(184, 107, 67, 0.08) 0%, rgba(214, 133, 91, 0.04) 100%);
+}
+
+/* Subtle Glows and Shadows */
+.shadow-copper {
+  box-shadow: 0 10px 30px -5px rgba(184, 107, 67, 0.25);
+}
+
+.shadow-soft {
+  box-shadow: 0 8px 30px rgba(55, 40, 30, 0.06);
+}
+
+.shadow-card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.shadow-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -4px rgba(60, 42, 30, 0.12);
+}
+
+/* Micro Gestures & Keyframes */
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(0.8deg); }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes scanLine {
+  0% { top: 0%; opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0.8; }
+}
+
+.animate-float {
+  animation: floatGentle 6s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #B86B43, transparent);
+  box-shadow: 0 0 8px #B86B43;
+  animation: scanLine 2.2s ease-in-out infinite alternate;
+}
+
+/* Botanical Watermark Background Pattern */
+.bg-mandala-pattern {
+  background-image: radial-gradient(#B86B43 0.75px, transparent 0.75px), radial-gradient(#B86B43 0.75px, var(--color-bg-linen) 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  opacity: 0.25;
+}
+
+/* Interactive Calendar Grid */
+.calendar-day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  position: relative;
+}
+
+.calendar-day-cell:hover:not(.disabled):not(.selected) {
+  background-color: var(--color-pastel-sage);
+  color: var(--color-charcoal);
+}
+
+.calendar-day-cell.selected {
+  background: linear-gradient(135deg, #B86B43 0%, #9E4F28 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(184, 107, 67, 0.35);
+  font-weight: 600;
+}
+
+.calendar-day-cell.today::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  background: #B86B43;
+  border-radius: 50%;
+}
+.calendar-day-cell.selected.today::after {
+  background: #FFFFFF;
+}
+
+.calendar-day-cell.disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* Time Slot Pill */
+.time-slot-btn {
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s ease;
+  background-color: #FFFFFF;
+  color: var(--color-charcoal);
+  cursor: pointer;
+}
+.time-slot-btn:hover:not(:disabled) {
+  border-color: var(--color-copper);
+  background-color: var(--color-pastel-sage);
+}
+.time-slot-btn.active {
+  border-color: var(--color-copper);
+  background-color: #1E1C1A;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(30, 28, 26, 0.2);
+}
+.time-slot-btn:disabled {
+  opacity: 0.4;
+  background-color: #F5F1EB;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+/* Glassmorphism Card */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(232, 223, 213, 0.8);
+}
+
+/* Smooth Tab Transitions */
+.tab-content {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.tab-content.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Toast Notification */
+#toastNotification {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  transform: translateY(100px);
+  opacity: 0;
+  pointer-events: none;
+}
+#toastNotification.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}

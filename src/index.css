@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    
+    --color-bg-linen: #FAF7F2;
+    --color-bg-sand: #F3ECE4;
+    --color-pastel-sage: #E8EFE9;
+    --color-pastel-blush: #F9EFEA;
+    
+    --color-copper: #B86B43;
+    --color-copper-light: #D6855B;
+    --color-copper-dark: #8E4623;
+    --color-charcoal: #1E1C1A;
+    --color-charcoal-muted: #5C554E;
+    --color-border: #E8DFD5;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg-linen);
+    color: var(--color-charcoal);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+}
+
+.font-serif {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F3ECE4;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1BEB0;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B86B43;
+}
+
+/* Copper Gradient Typography & Backgrounds */
+.text-copper-gradient {
+  background: linear-gradient(135deg, #B86B43 0%, #D6855B 50%, #8E4623 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-copper-gradient {
+  background: linear-gradient(135deg, #B86B43 0%, #C97D55 60%, #9E4F28 100%);
+}
+
+.shadow-copper {
+  box-shadow: 0 10px 30px -5px rgba(184, 107, 67, 0.25);
+}
+
+.shadow-soft {
+  box-shadow: 0 8px 30px rgba(55, 40, 30, 0.06);
+}
+
+/* Botanical Watermark Background Pattern */
+.bg-mandala-pattern {
+  background-image: radial-gradient(#B86B43 0.75px, transparent 0.75px), radial-gradient(#B86B43 0.75px, #FAF7F2 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  opacity: 0.35;
+}
+
+/* Scan line effect for UPI QR code */
+@keyframes scanLine {
+  0% { top: 0%; opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0.8; }
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #B86B43, transparent);
+  box-shadow: 0 0 8px #B86B43;
+  animation: scanLine 2.2s ease-in-out infinite alternate;
+}

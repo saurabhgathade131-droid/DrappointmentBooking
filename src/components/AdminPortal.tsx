@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Appointment } from '../types';
+import { Appointment, ClinicalPrescription } from '../types';
 import { DEFAULT_AVAILABLE_SLOTS } from '../data/initialData';
+import { PrescriptionBuilderModal } from './PrescriptionBuilderModal';
 import {
   Lock,
   ArrowLeft,
@@ -15,7 +16,10 @@ import {
   Eye,
   Check,
   MessageCircle,
-  X
+  X,
+  FileText,
+  Stethoscope,
+  Printer
 } from 'lucide-react';
 
 export const AdminPortal: React.FC = () => {
@@ -29,6 +33,7 @@ export const AdminPortal: React.FC = () => {
     customSlots,
     setCustomSlotsForDate,
     setIsAdminView,
+    openPrescriptionModal,
     showToast
   } = useApp();
 
@@ -49,11 +54,15 @@ export const AdminPortal: React.FC = () => {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [tempNotes, setTempNotes] = useState('');
 
+  // Prescription builder modal state
+  const [activeConsultationAppointment, setActiveConsultationAppointment] = useState<Appointment | null>(null);
+
   // Doctor Settings Form State
   const [upiInput, setUpiInput] = useState(doctor.upiId);
   const [phoneInput, setPhoneInput] = useState(doctor.contactPhone);
   const [emailInput, setEmailInput] = useState(doctor.contactEmail);
   const [clinicInput, setClinicInput] = useState(doctor.clinicAddress);
+  const [regNumInput, setRegNumInput] = useState(doctor.regNumber);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +70,7 @@ export const AdminPortal: React.FC = () => {
       setIsAuthenticated(true);
       sessionStorage.setItem('vaidya_admin_auth', 'true');
       setPinError(false);
-      showToast('Welcome Dr. Nageshree!');
+      showToast('Welcome Dr. Nagasri Tenneti!');
     } else {
       setPinError(true);
     }
@@ -118,7 +127,7 @@ export const AdminPortal: React.FC = () => {
       showToast('No records to export', 'info');
       return;
     }
-    const headers = ['ID', 'Patient Name', 'Phone', 'Email', 'City', 'Age', 'Date', 'Slot', 'Type', 'Price', 'UTR', 'Payment Status', 'Status', 'Doctor Notes'];
+    const headers = ['ID', 'Patient Name', 'Phone', 'Email', 'City', 'Age', 'Date', 'Slot', 'Type', 'Price', 'UTR', 'Payment Status', 'Status', 'Has Prescription', 'Doctor Notes'];
     const rows = appointments.map(a => [
       `"${a.id}"`,
       `"${a.patientName}"`,
@@ -133,13 +142,14 @@ export const AdminPortal: React.FC = () => {
       `"${a.utrNumber}"`,
       `"${a.paymentStatus}"`,
       `"${a.status}"`,
+      `"${a.prescription ? 'Yes (' + a.prescription.id + ')' : 'No'}"`,
       `"${(a.doctorNotes || '').replace(/"/g, '""')}"`
     ]);
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `VaidyaVeda_Appointments_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `VedicVaidya_Appointments_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -153,7 +163,8 @@ export const AdminPortal: React.FC = () => {
       upiId: upiInput.trim(),
       contactPhone: phoneInput.trim(),
       contactEmail: emailInput.trim(),
-      clinicAddress: clinicInput.trim()
+      clinicAddress: clinicInput.trim(),
+      regNumber: regNumInput.trim()
     });
   };
 
@@ -168,7 +179,7 @@ export const AdminPortal: React.FC = () => {
 
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-[#B86B43]">Doctor Access Only</span>
-            <h3 className="font-serif text-2xl font-bold text-[#1E1C1A] mt-1">Dr. Nageshree's Sanctum Desk</h3>
+            <h3 className="font-serif text-2xl font-bold text-[#1E1C1A] mt-1">Dr. Nagasri's Sanctum Desk</h3>
             <p className="text-xs text-[#5C554E] mt-2">
               Please enter your secure 4-digit doctor PIN to manage available slots, verify UPI payments, and review patient intake records.
             </p>
@@ -214,15 +225,15 @@ export const AdminPortal: React.FC = () => {
       <header className="bg-white border-b border-[#E8DFD5] sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] p-1 border border-[#E8DFD5] flex items-center justify-center">
-              <img src="/assets/images/logo.svg" alt="Vaidya Veda" className="w-full h-full object-contain" />
+            <div className="w-10 h-10 rounded-full overflow-hidden p-0.5 bg-[#FAF7F2] border border-[#E8DFD5] flex items-center justify-center">
+              <img src="/assets/images/vedic-vaidya-logo.jpg" alt="Vedic Vaidya" className="w-full h-full object-cover rounded-full" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-serif text-xl font-bold text-[#1E1C1A]">Dr. Nageshree's Clinical Console</h1>
+                <h1 className="font-serif text-xl font-bold text-[#1E1C1A]">Dr. Nagasri Tenneti's Clinical Console</h1>
                 <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold">Live Admin</span>
               </div>
-              <p className="text-[11px] text-[#5C554E]">Vaidya Veda Fertility Management • Ex-Gynoveda</p>
+              <p className="text-[11px] text-[#5C554E]">Vedic Vaidya Fertility Management • Ex-Gynoveda</p>
             </div>
           </div>
 
@@ -252,7 +263,7 @@ export const AdminPortal: React.FC = () => {
                 : 'border-transparent text-[#5C554E] hover:text-[#1E1C1A]'
             }`}
           >
-            <Users className="w-4 h-4 text-[#B86B43]" /> Appointments CRM
+            <Users className="w-4 h-4 text-[#B86B43]" /> Appointments CRM &amp; Consultations
           </button>
           <button
             onClick={() => setActiveTab('slots')}
@@ -272,7 +283,7 @@ export const AdminPortal: React.FC = () => {
                 : 'border-transparent text-[#5C554E] hover:text-[#1E1C1A]'
             }`}
           >
-            <Settings className="w-4 h-4" /> Profile &amp; UPI Settings
+            <Settings className="w-4 h-4" /> Profile &amp; Letterhead Settings
           </button>
         </div>
       </header>
@@ -292,7 +303,7 @@ export const AdminPortal: React.FC = () => {
           </div>
 
           <div className="bg-white p-5 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-soft">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 block">Confirmed</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 block">Confirmed &amp; Active</span>
             <div className="font-serif text-2xl font-extrabold text-emerald-900 mt-1">{confirmedCount}</div>
           </div>
 
@@ -357,6 +368,7 @@ export const AdminPortal: React.FC = () => {
                       <th className="py-3.5 px-4">Consultation</th>
                       <th className="py-3.5 px-4">Slot</th>
                       <th className="py-3.5 px-4">UPI Payment &amp; UTR</th>
+                      <th className="py-3.5 px-4">Prescription Letterhead</th>
                       <th className="py-3.5 px-4">Status</th>
                       <th className="py-3.5 px-4 text-right">Actions</th>
                     </tr>
@@ -364,7 +376,7 @@ export const AdminPortal: React.FC = () => {
                   <tbody>
                     {filteredAppointments.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="p-8 text-center text-sm text-[#5C554E]">
+                        <td colSpan={8} className="p-8 text-center text-sm text-[#5C554E]">
                           No appointments found matching this criteria.
                         </td>
                       </tr>
@@ -399,6 +411,25 @@ export const AdminPortal: React.FC = () => {
                             <div className="text-[10px] font-mono text-[#5C554E] mt-0.5">UTR: {a.utrNumber}</div>
                           </td>
                           <td className="py-4 px-4">
+                            {a.prescription ? (
+                              <button
+                                onClick={() => openPrescriptionModal(a.prescription!)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 transition-colors"
+                              >
+                                <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>{a.prescription.id}</span>
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => setActiveConsultationAppointment(a)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-semibold hover:bg-amber-100 transition-colors"
+                              >
+                                <Stethoscope className="w-3 h-3 text-amber-600" />
+                                <span>Create Rx</span>
+                              </button>
+                            )}
+                          </td>
+                          <td className="py-4 px-4">
                             <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                               a.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-800' :
                               a.status === 'Pending' ? 'bg-amber-100 text-amber-800' :
@@ -408,7 +439,17 @@ export const AdminPortal: React.FC = () => {
                             </span>
                           </td>
                           <td className="py-4 px-4 text-right">
-                            <div className="flex items-center justify-end gap-2">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {/* Open Consultation Desk & Prescription Builder */}
+                              <button
+                                onClick={() => setActiveConsultationAppointment(a)}
+                                title="Open Consultation Desk & Prescription Builder"
+                                className="p-2 rounded-lg bg-[#E8EFE9] hover:bg-[#B86B43] hover:text-white transition-colors text-emerald-900"
+                              >
+                                <Stethoscope className="w-4 h-4" />
+                              </button>
+
+                              {/* View Details */}
                               <button
                                 onClick={() => {
                                   setSelectedAppointment(a);
@@ -419,6 +460,8 @@ export const AdminPortal: React.FC = () => {
                               >
                                 <Eye className="w-4 h-4" />
                               </button>
+
+                              {/* Quick Verify */}
                               {a.status === 'Pending' && (
                                 <button
                                   onClick={() => {
@@ -431,8 +474,10 @@ export const AdminPortal: React.FC = () => {
                                   <Check className="w-4 h-4" />
                                 </button>
                               )}
+
+                              {/* WhatsApp Direct */}
                               <a
-                                href={`https://wa.me/${a.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${a.patientName}, this is Dr. Nageshree from Vaidya Veda regarding your appointment on ${a.date} at ${a.timeSlot}.`)}`}
+                                href={`https://wa.me/${a.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Namaste ${a.patientName}, this is Dr. Nagasri Tenneti from Vedic Vaidya regarding your consultation on ${a.date} at ${a.timeSlot}.`)}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 title="WhatsApp Patient"
@@ -538,30 +583,38 @@ export const AdminPortal: React.FC = () => {
         {activeTab === 'settings' && (
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E8DFD5] shadow-soft max-w-3xl">
             <div className="pb-6 border-b border-[#F0EAE1] mb-6">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#B86B43]">Payment &amp; Clinic Configuration</span>
-              <h3 className="font-serif text-2xl font-bold text-[#1E1C1A] mt-1">Doctor Profile &amp; UPI Gateway Settings</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#B86B43]">Letterhead &amp; Clinic Configuration</span>
+              <h3 className="font-serif text-2xl font-bold text-[#1E1C1A] mt-1">Doctor Profile &amp; Official Letterhead Settings</h3>
               <p className="text-xs text-[#5C554E]">
-                Updates made here instantly update the dynamic UPI QR code generator on the patient booking wizard.
+                Updates made here automatically appear on your generated Ayurvedic Prescription Letterheads and UPI QR gateway.
               </p>
             </div>
 
             <form onSubmit={handleSaveSettings} className="space-y-5">
-              <div>
-                <label className="block text-xs font-bold text-[#1E1C1A] mb-1 uppercase tracking-wider">
-                  Official Doctor UPI ID / VPA *
-                </label>
-                <div className="relative">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[#1E1C1A] mb-1 uppercase tracking-wider">
+                    Doctor Registration Number *
+                  </label>
+                  <input
+                    type="text"
+                    value={regNumInput}
+                    onChange={e => setRegNumInput(e.target.value)}
+                    placeholder="e.g. AYU-MAH-48921/A"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E8DFD5] text-xs font-bold focus:outline-none focus:border-[#B86B43]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#1E1C1A] mb-1 uppercase tracking-wider">
+                    Official Doctor UPI ID / VPA *
+                  </label>
                   <input
                     type="text"
                     value={upiInput}
                     onChange={e => setUpiInput(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-[#E8DFD5] font-mono text-sm focus:outline-none focus:border-[#B86B43]"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E8DFD5] font-mono text-xs focus:outline-none focus:border-[#B86B43]"
                   />
-                  <span className="absolute right-3 top-3 text-xs text-[#5C554E]">e.g. drnageshree@okaxis</span>
                 </div>
-                <p className="text-[11px] text-[#5C554E] mt-1">
-                  Patients will scan a QR code and make payments directly to this verified UPI ID.
-                </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -591,7 +644,7 @@ export const AdminPortal: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-bold text-[#1E1C1A] mb-1 uppercase tracking-wider">
-                  Clinic Sanctum Address
+                  Clinic Sanctum Address (Printed on Letterhead)
                 </label>
                 <textarea
                   rows={2}
@@ -614,7 +667,7 @@ export const AdminPortal: React.FC = () => {
         )}
       </main>
 
-      {/* Patient Detail Inspection Modal */}
+      {/* Patient Detail Inspection & Notes Modal */}
       {selectedAppointment && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-xl w-full border border-[#E8DFD5] shadow-2xl overflow-hidden animate-scale-up">
@@ -649,6 +702,41 @@ export const AdminPortal: React.FC = () => {
                   <span className="text-[#5C554E] block mb-1">Consultation Type</span>
                   <strong className="text-[#1E1C1A] text-sm">{selectedAppointment.consultationType} (₹{selectedAppointment.consultationPrice})</strong>
                 </div>
+              </div>
+
+              {/* Prescription Card Banner */}
+              <div className="mb-5 p-4 rounded-2xl bg-[#E8EFE9]/50 border border-[#D5E2D7] flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-900 block">
+                    Ayurvedic Prescription &amp; Letterhead
+                  </span>
+                  <span className="text-xs font-bold text-[#1E1C1A]">
+                    {selectedAppointment.prescription ? `Prescription #${selectedAppointment.prescription.id}` : 'No prescription generated yet'}
+                  </span>
+                </div>
+                {selectedAppointment.prescription ? (
+                  <button
+                    onClick={() => {
+                      openPrescriptionModal(selectedAppointment.prescription!);
+                      setSelectedAppointment(null);
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-1.5"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>View &amp; Print Letterhead</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setActiveConsultationAppointment(selectedAppointment);
+                      setSelectedAppointment(null);
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-[#1E1C1A] hover:bg-[#B86B43] text-white text-xs font-bold flex items-center gap-1.5"
+                  >
+                    <Stethoscope className="w-3.5 h-3.5" />
+                    <span>Create Prescription</span>
+                  </button>
+                )}
               </div>
 
               <div className="mb-5">
@@ -736,6 +824,18 @@ export const AdminPortal: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Prescription Builder Modal */}
+      {activeConsultationAppointment && (
+        <PrescriptionBuilderModal
+          appointment={activeConsultationAppointment}
+          onClose={() => setActiveConsultationAppointment(null)}
+          onSaved={newRx => {
+            setActiveConsultationAppointment(null);
+            openPrescriptionModal(newRx);
+          }}
+        />
       )}
     </div>
   );

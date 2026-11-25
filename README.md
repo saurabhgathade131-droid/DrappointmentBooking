@@ -59,6 +59,34 @@ Vaidya Veda is a production-grade, highly aesthetic web platform crafted specifi
 
 ---
 
+## 📋 Clinical Consultation & Prescription Letterhead System
+
+1. **Active Consultation Desk**:
+   - Dr. Nagasri Tenneti can access the patient's record during video calls or in-person visits.
+   - Comprehensive intake: Prakriti Dosha evaluation (*Vata, Pitta, Kapha, Agni, Dhatu imbalances*), clinical diagnosis, baseline follicular/sperm parameters.
+   - Prescribe Ayurvedic medicines (*Phala Ghrita, Shatavari Gulam, Kanchnar Guggulu, etc.*) with dosage, carrier anupana (warm milk/water), timing, and duration.
+   - Recommend diagnostic laboratory tests (*AMH, Day 2/3 hormone panel, Semen Kruger strict morphology, Folliculometry*).
+   - Tailored **Pathya / Apathya** (diet to take, foods to avoid) & Garbh Sanskar yogic pranayama plan.
+
+2. **Official Letterhead & PDF Generation**:
+   - Generates an official clinic letterhead with Vedic Vaidya branding, Dr. Nagasri Tenneti's credentials (BAMS, Reg. No: `AYU-MAH-48921/A`, ex-Gynoveda), digital calligraphy signature, and clinical seal.
+   - One-click **Download / Print PDF** formatted for clean, professional A4 printing.
+   - One-click **Share on WhatsApp** with formatted prescription summary.
+
+3. **Patient Self-Service Portal**:
+   - Clients can click **"Prescription PDF"** in the top navigation bar or enter their Booking ID (e.g. `VV-2024-8901`) to view and download their treatment plan anytime.
+
+---
+
+## 🌐 Netlify Deployment
+
+This repository includes `netlify.toml` and `public/_redirects` pre-configured for instant zero-configuration deployment on Netlify:
+- **Build command**: `npm run build`
+- **Publish directory**: `dist`
+- **SPA Redirects**: `/* -> /index.html 200`
+
+---
+
 ## 🚀 Running the React + TypeScript Server Locally
 
 The Vite development server is **already active and running** on your machine:

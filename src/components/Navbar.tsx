@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { PhoneCall, Calendar, Lock, Menu, X, ShieldCheck, Instagram } from 'lucide-react';
+import { PhoneCall, Calendar, Lock, Menu, X, ShieldCheck, Instagram, FileText } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { openBookingModal, setIsAdminView, doctor } = useApp();
+  const { openBookingModal, setIsAdminView, openPatientLookupModal, doctor } = useApp();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -26,6 +26,12 @@ export const Navbar: React.FC = () => {
             <span className="opacity-90">{doctor.name} (BAMS, Ex-Gynoveda) • {doctor.sanskritShloka}</span>
           </div>
           <div className="hidden md:flex items-center gap-5 text-xs">
+            <button
+              onClick={openPatientLookupModal}
+              className="flex items-center gap-1.5 text-xs text-emerald-300 hover:text-white transition-colors bg-white/10 px-2.5 py-0.5 rounded-full"
+            >
+              <FileText className="w-3 h-3 text-emerald-400" /> Download Prescription
+            </button>
             <a
               href={doctor.instagramUrl}
               target="_blank"
@@ -41,7 +47,7 @@ export const Navbar: React.FC = () => {
               onClick={() => setIsAdminView(true)}
               className="flex items-center gap-1.5 text-xs text-[#D6855B] hover:text-white transition-colors bg-white/10 px-2.5 py-0.5 rounded-full"
             >
-              <ShieldCheck className="w-3 h-3" /> Doctor Admin Portal
+              <ShieldCheck className="w-3 h-3" /> Doctor Portal
             </button>
           </div>
         </div>
@@ -88,6 +94,14 @@ export const Navbar: React.FC = () => {
 
           {/* Action CTAs */}
           <div className="hidden sm:flex items-center gap-3">
+            <button
+              onClick={openPatientLookupModal}
+              className="px-4 py-2.5 rounded-xl border border-[#E8DFD5] bg-white text-xs font-bold text-[#1E1C1A] hover:border-[#B86B43] hover:text-[#B86B43] transition-colors flex items-center gap-1.5"
+              title="Lookup your prescription or booking"
+            >
+              <FileText className="w-4 h-4 text-[#B86B43]" />
+              <span>Prescription PDF</span>
+            </button>
             <button
               onClick={() => setIsAdminView(true)}
               className="p-2.5 rounded-xl border border-[#E8DFD5] bg-white text-[#5C554E] hover:text-[#B86B43] hover:border-[#B86B43] transition-colors"
@@ -137,6 +151,17 @@ export const Navbar: React.FC = () => {
               <a href="#mediaSection" onClick={() => setIsMobileMenuOpen(false)} className="py-2 border-b border-gray-50">TV Interviews</a>
               <a href="#testimonialsSection" onClick={() => setIsMobileMenuOpen(false)} className="py-2 border-b border-gray-50">Success Stories</a>
               <a href="#pricingSection" onClick={() => setIsMobileMenuOpen(false)} className="py-2 border-b border-gray-50">Packages</a>
+              
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  openPatientLookupModal();
+                }}
+                className="py-2 text-emerald-800 font-bold flex items-center gap-2 text-left"
+              >
+                <FileText className="w-4 h-4 text-emerald-600" /> Download Prescription PDF
+              </button>
+
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { DoctorProfile, Appointment, SlotAvailability, ConsultationType, MediaInterview } from '../types';
+import { DoctorProfile, Appointment, SlotAvailability, ConsultationType, MediaInterview, ClinicalPrescription } from '../types';
 import { INITIAL_DOCTOR, SAMPLE_APPOINTMENTS, DEFAULT_AVAILABLE_SLOTS } from '../data/initialData';
 
 interface ToastData {
@@ -13,6 +13,7 @@ interface AppContextType {
   appointments: Appointment[];
   addAppointment: (appointment: Appointment) => void;
   updateAppointmentStatus: (id: string, status: Appointment['status'], paymentStatus?: Appointment['paymentStatus'], notes?: string) => void;
+  savePrescription: (appointmentId: string, prescription: ClinicalPrescription) => void;
   blockedDates: string[];
   toggleBlockedDate: (dateStr: string) => void;
   customSlots: Record<string, string[]>;
@@ -28,6 +29,16 @@ interface AppContextType {
   activeVideoModal: MediaInterview | null;
   openVideoModal: (media: MediaInterview) => void;
   closeVideoModal: () => void;
+  
+  // Prescription Viewer Modal
+  activePrescription: ClinicalPrescription | null;
+  openPrescriptionModal: (prescription: ClinicalPrescription) => void;
+  closePrescriptionModal: () => void;
+
+  // Patient Lookup Modal
+  isPatientLookupModalOpen: boolean;
+  openPatientLookupModal: () => void;
+  closePatientLookupModal: () => void;
   
   isAdminView: boolean;
   setIsAdminView: (show: boolean) => void;
@@ -79,6 +90,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedPackageForBooking, setSelectedPackageForBooking] = useState<ConsultationType | null>(null);
   const [activeVideoModal, setActiveVideoModal] = useState<MediaInterview | null>(null);
+  const [activePrescription, setActivePrescription] = useState<ClinicalPrescription | null>(null);
+  const [isPatientLookupModalOpen, setIsPatientLookupModalOpen] = useState(false);
   const [isAdminView, setIsAdminView] = useState(false);
   const [toast, setToast] = useState<ToastData | null>(null);
 
@@ -136,6 +149,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
+  const savePrescription = (appointmentId: string, prescription: ClinicalPrescription) => {
+    setAppointments(prev =>
+      prev.map(a => {
+        if (a.id === appointmentId) {
+          return {
+            ...a,
+            prescription,
+            status: a.status === 'Pending' ? 'Confirmed' : a.status
+          };
+        }
+        return a;
+      })
+    );
+    showToast(`Prescription ${prescription.id} saved & generated successfully!`);
+  };
+
   const toggleBlockedDate = (dateStr: string) => {
     setBlockedDates(prev => {
       const exists = prev.includes(dateStr);
@@ -189,6 +218,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setActiveVideoModal(null);
   };
 
+  const openPrescriptionModal = (prescription: ClinicalPrescription) => {
+    setActivePrescription(prescription);
+  };
+
+  const closePrescriptionModal = () => {
+    setActivePrescription(null);
+  };
+
+  const openPatientLookupModal = () => {
+    setIsPatientLookupModalOpen(true);
+  };
+
+  const closePatientLookupModal = () => {
+    setIsPatientLookupModalOpen(false);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -197,6 +242,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         appointments,
         addAppointment,
         updateAppointmentStatus,
+        savePrescription,
         blockedDates,
         toggleBlockedDate,
         customSlots,
@@ -209,6 +255,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         activeVideoModal,
         openVideoModal,
         closeVideoModal,
+        activePrescription,
+        openPrescriptionModal,
+        closePrescriptionModal,
+        isPatientLookupModalOpen,
+        openPatientLookupModal,
+        closePatientLookupModal,
         isAdminView,
         setIsAdminView,
         toast,

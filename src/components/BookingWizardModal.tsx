@@ -675,7 +675,7 @@ export const BookingWizardModal: React.FC = () => {
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <a
-                href={`https://wa.me/919823045678?text=${encodeURIComponent(`Namaste Dr. Nageshree, I have booked a consultation (${confirmedPass.id}) for ${confirmedPass.patientName} on ${confirmedPass.date} at ${confirmedPass.timeSlot}. My UPI UTR is ${confirmedPass.utrNumber}.`)}`}
+                href={`https://wa.me/919823045678?text=${encodeURIComponent(`Namaste Dr. Nagasri, I have booked a consultation (${confirmedPass.id}) for ${confirmedPass.patientName} on ${confirmedPass.date} at ${confirmedPass.timeSlot}. My UPI UTR is ${confirmedPass.utrNumber}.`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-2 shadow-sm"
@@ -684,7 +684,7 @@ export const BookingWizardModal: React.FC = () => {
                 <span>Send Details on WhatsApp</span>
               </a>
               <a
-                href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Fertility Consultation with Dr. Nageshree (${confirmedPass.id})`)}&dates=${confirmedPass.date.replace(/-/g, '')}T100000Z/${confirmedPass.date.replace(/-/g, '')}T110000Z&details=${encodeURIComponent(`Ayurvedic Consultation with Dr. Nageshree. Ref: ${confirmedPass.id}`)}`}
+                href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`Fertility Consultation with Dr. Nagasri Tenneti (${confirmedPass.id})`)}&dates=${confirmedPass.date.replace(/-/g, '')}T100000Z/${confirmedPass.date.replace(/-/g, '')}T110000Z&details=${encodeURIComponent(`Ayurvedic Consultation with Dr. Nagasri Tenneti. Ref: ${confirmedPass.id}`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="px-5 py-3 rounded-xl bg-white hover:bg-gray-100 border border-[#E8DFD5] text-[#1E1C1A] text-xs font-semibold flex items-center gap-2"
@@ -692,6 +692,10 @@ export const BookingWizardModal: React.FC = () => {
                 <CalendarIcon className="w-4 h-4 text-[#B86B43]" />
                 <span>Add to Google Calendar</span>
               </a>
+            </div>
+
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl max-w-md mx-auto text-xs text-emerald-950 text-center">
+              <span>Your formal Clinical Prescription &amp; Treatment Plan with Dr. Nagasri's signature will be generated during your call and can be downloaded anytime using Ref ID <strong>{confirmedPass.id}</strong>.</span>
             </div>
 
             <div className="pt-4">

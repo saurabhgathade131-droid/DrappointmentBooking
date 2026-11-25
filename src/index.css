@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 
 @layer base {
   :root {
@@ -29,6 +30,10 @@
 
 .font-serif {
   font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-signature {
+  font-family: 'Dancing Script', 'Playfair Display', cursive, serif;
 }
 
 /* Custom Scrollbar */
@@ -89,4 +94,34 @@
   background: linear-gradient(90deg, transparent, #B86B43, transparent);
   box-shadow: 0 0 8px #B86B43;
   animation: scanLine 2.2s ease-in-out infinite alternate;
+}
+
+/* Print Styles for Clinical Prescription Letterhead PDF */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .no-print, header, footer, #toastNotification {
+    display: none !important;
+  }
+
+  #printablePrescriptionSheet {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
 }

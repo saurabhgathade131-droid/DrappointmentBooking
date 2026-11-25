@@ -1,4 +1,4 @@
-import { DoctorProfile, ConsultationType, MediaInterview, Testimonial, ClinicalStat, Appointment, InstagramPost } from '../types';
+import { DoctorProfile, ConsultationType, MediaInterview, Testimonial, ClinicalStat, Appointment, InstagramPost, ClinicalPrescription } from '../types';
 
 export const INITIAL_DOCTOR: DoctorProfile = {
   name: "Dr. Nagasri Tenneti",
@@ -6,6 +6,7 @@ export const INITIAL_DOCTOR: DoctorProfile = {
   title: "BAMS (Ayurvedacharya)",
   role: "Ayurvedic Fertility & Reproductive Health Specialist",
   exAffiliation: "Former Senior Fertility Consultant at Gynoveda",
+  regNumber: "AYU-MAH-48921/A",
   experienceYears: 12,
   successCount: 200,
   patientCount: "14,500+",
@@ -18,7 +19,7 @@ export const INITIAL_DOCTOR: DoctorProfile = {
   upiId: "vedicvaidya@okaxis",
   contactEmail: "care@vedicvaidya.com",
   contactPhone: "+91 98230 45678",
-  clinicAddress: "Vedic Vaidya Wellness Sanctum, Pune & Online Teleconsultations Worldwide"
+  clinicAddress: "Vedic Vaidya Wellness Sanctum, 402 Lotus Pavilion, Off FC Road, Pune & Online Teleconsultations Worldwide"
 };
 
 export const INSTAGRAM_POSTS: InstagramPost[] = [
@@ -106,8 +107,8 @@ export const CONSULTATION_TYPES: ConsultationType[] = [
     description: "1-on-1 private video assessment with Dr. Nagasri Tenneti reviewing medical reports (AMH, semen analysis, pelvic scan), dosha imbalance analysis, and customized 90-day Ayurvedic fertility roadmap.",
     features: [
       "Full Blood & Semen Report Review",
-      "Personalized Herbal Prescription",
-      "Diet & Dinacharya Regimen",
+      "Personalized Herbal Prescription & Letterhead",
+      "Diet & Dinacharya Regimen PDF",
       "7 Days Post-Consult WhatsApp Support"
     ]
   },
@@ -122,8 +123,8 @@ export const CONSULTATION_TYPES: ConsultationType[] = [
       "Dual Partner Diagnostic Analysis",
       "Sperm Count & Motility Revival Plan",
       "PCOS / Endometrium Optimization",
-      "Garbh Sanskar & Beej Shuddhi Guide",
-      "15 Days Direct Support"
+      "Official Dual Prescription Letterhead",
+      "15 Days Direct WhatsApp Support"
     ]
   },
   {
@@ -136,8 +137,8 @@ export const CONSULTATION_TYPES: ConsultationType[] = [
     features: [
       "Nadi Pariksha (Pulse Diagnosis)",
       "Prakriti & Agni Assessment",
-      "Prescription & Immediate Herbal Access",
-      "Follow-up schedule included"
+      "Printed Official Clinic Letterhead",
+      "Follow-up review schedule included"
     ]
   }
 ];
@@ -254,6 +255,120 @@ export const DEFAULT_AVAILABLE_SLOTS = [
   "06:30 PM"
 ];
 
+// Rich Sample Prescription for Sneha & Amit Joshi
+const SAMPLE_PRESCRIPTION_1: ClinicalPrescription = {
+  id: "RX-VV-2024-8901",
+  appointmentId: "VV-2024-8901",
+  patientName: "Sneha & Amit Joshi",
+  age: 31,
+  gender: "Couple (F: 31, M: 33)",
+  consultationDate: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
+  consultationMode: "Video Consultation",
+  vitalSigns: {
+    bp: "118/76 mmHg",
+    weight: "58 kg / 72 kg",
+    pulseNadi: "Pitta-Vata (Mandagni dominant in female partner)"
+  },
+  prakritiDosha: {
+    dominant: "Vata-Pitta",
+    agniState: "Vishamagni",
+    dhatuImbalance: "Artava Vaha Srotas Avarodha & Shukra Dhatu Mandata"
+  },
+  clinicalDiagnosis: "PCOS with Delayed Anovulatory Cycles (45-50 days) & Moderate Oligo-Asthenozoospermia (28% motility)",
+  fertilityParametersNote: "Wife: Day 2 AMH is 6.2 ng/mL with multiple peripheral follicles. Husband: Semen count 21 M/ml, Progressive motility 28%. Treatment goal: Stimulate spontaneous ovulation & elevate forward progressive velocity > 45%.",
+  medicines: [
+    {
+      id: "med-1",
+      name: "Shatavari Gulam & Phala Ghrita Blend",
+      form: "Ghrita / Medicated Ghee",
+      dosage: "1 tablespoon (10g)",
+      frequency: "Twice daily",
+      timing: "Empty stomach in morning & bedtime with warm cow's milk",
+      durationDays: 60,
+      instructions: "Nourishes the endometrial lining to 9mm+ and strengthens oocyte mitochondrial membrane."
+    },
+    {
+      id: "med-2",
+      name: "Kanchnar Guggulu (Shodhita)",
+      form: "Vati / Tablets",
+      dosage: "2 tablets",
+      frequency: "Twice daily",
+      timing: "30 mins after lunch & dinner with lukewarm water",
+      durationDays: 60,
+      instructions: "Dissolves ovarian cystic congestion and balances luteinizing hormone (LH)."
+    },
+    {
+      id: "med-3",
+      name: "Ashwagandha & Gokshura Shukra Vardhak Rasayana",
+      form: "Churna / Botanical Powder",
+      dosage: "1 teaspoon (5g)",
+      frequency: "Twice daily",
+      timing: "After meals with warm milk & pinch of cardamom",
+      durationDays: 90,
+      instructions: "Prescribed for husband to lower testicular oxidative stress and accelerate sperm motility."
+    },
+    {
+      id: "med-4",
+      name: "Beej Shuddhi Kwath",
+      form: "Kwath / Herbal Decoction",
+      dosage: "40 ml fresh decoction",
+      frequency: "Once daily",
+      timing: "Early morning 6:30 AM",
+      durationDays: 30,
+      instructions: "Deep cellular detox to eliminate Apana Vata stagnation before fertile window."
+    }
+  ],
+  recommendedTests: [
+    {
+      id: "test-1",
+      testName: "Transvaginal Ultrasound (Folliculometry Serial Scan Day 11, 13, 15)",
+      urgency: "Before Next Cycle",
+      purpose: "Track dominant follicle growth (target 18-22mm) and triple-line endometrial thickness."
+    },
+    {
+      id: "test-2",
+      testName: "Repeat Semen Analysis (Strict Kruger Morphology)",
+      urgency: "Routine",
+      purpose: "Assess motility improvement after 60 days of rasayana protocol."
+    },
+    {
+      id: "test-3",
+      testName: "Serum Progesterone (Day 21)",
+      urgency: "Before Next Cycle",
+      purpose: "Confirm spontaneous corpus luteum rupture and progesterone surge."
+    }
+  ],
+  dietAndLifestyle: {
+    dietToInclude: [
+      "Soaked almonds (5) & walnuts (2) every morning",
+      "Fresh pomegranate and black raisins soaked overnight",
+      "Pure A2 Cow Ghee (1 tsp with every meal)",
+      "Warm sesame and pumpkin seeds (Seed Cycling Phase 1)"
+    ],
+    dietToAvoid: [
+      "Refined bakery flour (Maida), white sugar & soda",
+      "Excess sour, fermented batter (stale idli/dosa) and vinegar",
+      "Deep fried snacks and cold refrigerated water",
+      "Smoking, alcohol and excessive coffee intake"
+    ],
+    lifestyleGuidance: [
+      "Sleep strictly by 10:30 PM to optimize melatonin & reproductive hormones",
+      "Daily 20 mins of Anulom Vilom and Bhramari Pranayama together",
+      "Abhyanga: Warm sesame oil lower abdominal self-massage (avoid during menses)",
+      "Avoid placing laptops on lap or excessive sauna/hot baths (for husband)"
+    ],
+    garbhSanskarNote: "Practice 10 mins daily conscious positive visualization for welcoming a healthy, calm baby into your family."
+  },
+  doctorAdvice: "Patience and consistency are paramount. Cellular gamete spermatogenesis takes 74 days, and follicular recruitment takes 90 days. Follow the medicines without skipping a single day. Stay relaxed.",
+  nextFollowUpDate: new Date(Date.now() + 86400000 * 30).toISOString().split('T')[0],
+  doctorSignature: {
+    doctorName: "Dr. Nagasri Tenneti",
+    qualification: "BAMS (Ayurvedacharya)",
+    regNumber: "AYU-MAH-48921/A",
+    signedDate: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0]
+  }
+};
+
 export const SAMPLE_APPOINTMENTS: Appointment[] = [
   {
     id: "VV-2024-8901",
@@ -272,7 +387,8 @@ export const SAMPLE_APPOINTMENTS: Appointment[] = [
     utrNumber: "UPI439201948291",
     paymentStatus: "Verified",
     status: "Confirmed",
-    doctorNotes: "Review husband's semen report and wife's AMH on Day 2.",
+    doctorNotes: "Review husband's semen report and wife's AMH on Day 2. Prescribed initial 60-day roadmap.",
+    prescription: SAMPLE_PRESCRIPTION_1,
     createdAt: new Date(Date.now() - 3600000 * 4).toISOString()
   },
   {
@@ -315,4 +431,29 @@ export const SAMPLE_APPOINTMENTS: Appointment[] = [
     doctorNotes: "Booked for clinic visit. Nadi pariksha to be done.",
     createdAt: new Date(Date.now() - 3600000 * 24).toISOString()
   }
+];
+
+// Presets for Doctor Quick-Selection in Admin
+export const COMMON_AYURVEDIC_MEDICINES = [
+  { name: "Phala Ghrita", form: "Ghrita / Medicated Ghee", dosage: "1 tbsp (10g)", timing: "Empty stomach with warm milk", durationDays: 60 },
+  { name: "Shatavari Gulam", form: "Lehyam / Herbal Paste", dosage: "1 tsp (5g)", timing: "Twice daily with warm milk", durationDays: 90 },
+  { name: "Kanchnar Guggulu", form: "Vati / Tablets", dosage: "2 tablets", timing: "Post meals with warm water", durationDays: 60 },
+  { name: "Pushpadhanwa Ras", form: "Rasushadhi Tablet", dosage: "1 tablet", timing: "Twice daily with honey/milk", durationDays: 45 },
+  { name: "Ashwagandharishta", form: "Asava / Arishta", dosage: "20 ml with equal water", timing: "Twice daily after meals", durationDays: 60 },
+  { name: "Gokshuradi Guggulu", form: "Vati / Tablets", dosage: "2 tablets", timing: "Twice daily with water", durationDays: 45 },
+  { name: "Beej Shuddhi Rasayana", form: "Churna / Powder", dosage: "1 tsp (5g)", timing: "Bedtime with lukewarm water", durationDays: 30 },
+  { name: "Chandraprabha Vati", form: "Vati / Tablets", dosage: "2 tablets", timing: "Morning & evening after meals", durationDays: 60 },
+  { name: "Kumaryasava", form: "Asava Ferment", dosage: "15 ml with equal water", timing: "After meals twice daily", durationDays: 60 },
+  { name: "Sukumar Ghrita", form: "Ghrita / Medicated Ghee", dosage: "1 tbsp", timing: "Morning on empty stomach", durationDays: 45 }
+];
+
+export const COMMON_RECOMMENDED_TESTS = [
+  "Transvaginal Ultrasound (Folliculometry & Endometrial Thickness)",
+  "Serum AMH Level (Anti-Müllerian Hormone)",
+  "Semen Analysis (Strict Kruger Morphology & Forward Motility)",
+  "Day 2/3 Hormone Panel (FSH, LH, Prolactin, Estradiol)",
+  "Complete Thyroid Profile (TSH, Free T3, Free T4, Anti-TPO)",
+  "Serum Vitamin D3 & Vitamin B12 Levels",
+  "Pelvic Doppler Blood Flow Sonogram",
+  "Sperm DNA Fragmentation Index (DFI)"
 ];

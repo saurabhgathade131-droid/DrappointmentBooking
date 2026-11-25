@@ -12,15 +12,23 @@ import { PricingPackages } from './components/PricingPackages';
 import { Footer } from './components/Footer';
 import { BookingWizardModal } from './components/BookingWizardModal';
 import { AdminPortal } from './components/AdminPortal';
+import { PrescriptionLetterhead } from './components/PrescriptionLetterhead';
+import { PatientLookupModal } from './components/PatientLookupModal';
 import { Toast } from './components/Toast';
 
 export const App: React.FC = () => {
-  const { isAdminView } = useApp();
+  const { isAdminView, activePrescription, closePrescriptionModal } = useApp();
 
   if (isAdminView) {
     return (
       <>
         <AdminPortal />
+        {activePrescription && (
+          <PrescriptionLetterhead
+            prescription={activePrescription}
+            onClose={closePrescriptionModal}
+          />
+        )}
         <Toast />
       </>
     );
@@ -41,6 +49,13 @@ export const App: React.FC = () => {
       </main>
       <Footer />
       <BookingWizardModal />
+      <PatientLookupModal />
+      {activePrescription && (
+        <PrescriptionLetterhead
+          prescription={activePrescription}
+          onClose={closePrescriptionModal}
+        />
+      )}
       <Toast />
     </div>
   );
